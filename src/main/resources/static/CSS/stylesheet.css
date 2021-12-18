@@ -1,0 +1,52 @@
+.selected-image{
+width: 260px;
+height: 350px;
+position: absolute;
+top: 10px;
+right: 25px;
+margin-bottom: 5px;
+
+
+}
+.Deck-Grid{
+width: 340px;
+height: 200px;
+position: absolute;
+bottom: 40px;
+right: 25px;
+font-size: x-small;
+
+border:1px black solid;
+}
+.Main-Grid{
+
+}
+.add-card-button{
+border:1px black solid;
+font-size: small;
+}
+.Save-Deck-Button{
+border:1px black solid;
+font-size: small;
+left: 140px;
+bottom:56px;
+
+}
+
+.Add-DeckName-Field{
+color:black;
+position:absolute;
+bottom:45px;
+left: 260px;
+}
+.Accept-DeckName-Button{
+position:absolute;
+bottom:86px;
+left:460px;
+opacity:1;
+border:1px black solid;
+}
+.Remove-Button{
+bottom: 60px;
+border:1px black solid;
+}
