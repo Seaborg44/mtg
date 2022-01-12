@@ -101,14 +101,14 @@ public class MainView extends VerticalLayout {
         board1.setId("1");
         board1.getStyle().set("background-color", "yellow");
 
-            try {
-                if (loggedUser.getUsername().equals(numberOfPlayers.get(1).getUsername())) {
+        try {
+            if (loggedUser.getUsername().equals(numberOfPlayers.get(1).getUsername())) {
                     auxilliaryBoard1 = board1;
                     board1 = board4;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+        } catch (Exception e) {
+                e.printStackTrace();
+        }
 
         return board1;
     }
@@ -117,14 +117,14 @@ public class MainView extends VerticalLayout {
         board2.setId("2");
         board2.getStyle().set("background-color", "red");
 
-            try {
-                if (loggedUser.getUsername().equals(numberOfPlayers.get(1).getUsername())) {
+        try {
+            if (loggedUser.getUsername().equals(numberOfPlayers.get(1).getUsername())) {
                     auxilliaryBoard2 = board2;
                     board2 = board3;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+        } catch (Exception e) {
+                e.printStackTrace();
+        }
 
         return board2;
     }
@@ -133,13 +133,13 @@ public class MainView extends VerticalLayout {
         board3.setId("3");
         board3.getStyle().set("background-color", "green");
 
-            try {
-                if (loggedUser.getUsername().equals(numberOfPlayers.get(1).getUsername())) {
+        try {
+            if (loggedUser.getUsername().equals(numberOfPlayers.get(1).getUsername())) {
                     board3 = auxilliaryBoard2;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+        } catch (Exception e) {
+                e.printStackTrace();
+        }
 
         return board3;
     }
@@ -148,13 +148,13 @@ public class MainView extends VerticalLayout {
         board4.setId("4");
         board4.getStyle().set("background-color", "blue");
 
-            try {
-                if (loggedUser.getUsername().equals(numberOfPlayers.get(1).getUsername())) {
+        try {
+            if (loggedUser.getUsername().equals(numberOfPlayers.get(1).getUsername())) {
                     board4 = auxilliaryBoard1;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+        } catch (Exception e) {
+                e.printStackTrace();
+        }
 
         return board4;
     }
@@ -175,7 +175,7 @@ public class MainView extends VerticalLayout {
         navigateToDeckButton.addClassName("navigate-to-deck");
         navigateToDeckButton.addClickListener(buttonClickEvent -> {
             UI.getCurrent().navigate("/deck");
-            });
+        });
         return navigateToDeckButton;
     }
 
@@ -194,7 +194,7 @@ public class MainView extends VerticalLayout {
             playersDeck.setItems(deckService.getDecksOfTheUser(loggedUser.getId()));
         }
 
-        playersDeck.addItemClickListener(clickEvent->{
+        playersDeck.addItemClickListener(clickEvent -> {
             chosenDeck = clickEvent.getItem();
             try {
                 List<Card> list = deckService.fetchAllCardsInTheDeck(chosenDeck.getId());
@@ -222,7 +222,7 @@ public class MainView extends VerticalLayout {
         dragImage.setMaxHeight("100%");
         dragImage.setMaxWidth(60 + "px");
         dragImage.getStyle().set("bottom","10%");
-        dragImage.addClickListener(clickEvent->{
+        dragImage.addClickListener(clickEvent -> {
             getMainImage().setSrc(clickEvent.getSource().getSrc());
         });
         return dragImage;

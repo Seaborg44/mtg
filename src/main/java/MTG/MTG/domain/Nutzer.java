@@ -13,10 +13,13 @@ public class Nutzer {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
     @Size(min = 3, max = 24)
     private String username;
+
     @Size(min = 6, max = 32)
     private String password;
+
     @OneToMany(
             targetEntity = Deck.class,
             mappedBy = "nutzer",
@@ -57,5 +60,4 @@ public class Nutzer {
     public boolean passwordCheck(String password1) {
         return DigestUtils.sha1Hex(password1).equals(password);
     }
-
 }

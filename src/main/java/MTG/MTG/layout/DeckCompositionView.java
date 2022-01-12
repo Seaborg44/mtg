@@ -171,7 +171,7 @@ public class DeckCompositionView extends VerticalLayout {
      private Button getAcceptDeckNameButton() {
         acceptDeckNameButton.addClassNames("Accept-DeckName-Button");
         acceptDeckNameButton.setVisible(false);
-         acceptDeckNameButton.addClickListener(clickEvent -> {
+        acceptDeckNameButton.addClickListener(clickEvent -> {
              if (loggedUser != null) {
                  valueFromTextField = deckNametextField.getValue();
                  Deck deckToSave = new Deck();
@@ -220,8 +220,8 @@ public class DeckCompositionView extends VerticalLayout {
            } if (cardAccess.getQuantity() == 0) {
                deckService.getDeck().remove(cardAccess);
            }
-            deckGrid.setItems(deckService.getDeck());
-            deckGrid.getFooterRows().get(0).getCells().get(1).setText(deckService.calculateQuantityOfCardsInDeck());
+        deckGrid.setItems(deckService.getDeck());
+        deckGrid.getFooterRows().get(0).getCells().get(1).setText(deckService.calculateQuantityOfCardsInDeck());
         });
         return removeButton;
     }

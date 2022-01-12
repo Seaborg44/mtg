@@ -29,11 +29,13 @@ public class Deck {
     private List<Card> cards = new ArrayList<>();
 
     private String deckName;
+
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "NUTZER_ID")
     private Nutzer nutzer;
 
     public Deck() {
+
     }
 
     public Deck(List<Card> cards, String name, Nutzer nutzer) {

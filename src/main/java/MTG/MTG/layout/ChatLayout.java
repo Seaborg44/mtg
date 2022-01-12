@@ -47,7 +47,7 @@ public class ChatLayout extends VerticalLayout {
 
         inputLayout.add(messageField, sendButton);
         expand(messageField);
-        sendButton.addClickListener(event-> {
+        sendButton.addClickListener(event -> {
             publisher.onNext(new ChatMessage(VaadinSession.getCurrent().getAttribute(Nutzer.class).getUsername(),
                     messageField.getValue()));
             messageField.clear();
@@ -61,7 +61,7 @@ public class ChatLayout extends VerticalLayout {
         messageList.addClassName("message-list");
         expand(messageList);
         messages.subscribe(message-> {
-            getUI().ifPresent(ui -> ui.access(()-> {
+            getUI().ifPresent(ui -> ui.access(() -> {
                 messageList.add(new Paragraph(
                         message.getTime() + " - " + message.getFrom() + ": " + message.getMessage()
                 ));
