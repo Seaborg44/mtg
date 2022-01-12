@@ -4,6 +4,10 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@NamedQuery(
+        name = "Card.fetchCardByName",
+        query = "SELECT id FROM Card WHERE name= :name"
+)
 @Entity
 public class Card {
     @Id
@@ -17,13 +21,11 @@ public class Card {
     private String color;
     private String aggro;
     private String defense;
-    @ManyToMany(cascade = CascadeType.REFRESH)
-    @JoinTable(
-            name = "CardsAndDecks",
-            joinColumns = {@JoinColumn(name = "CARD_ID", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "DECK_ID", referencedColumnName = "id")}
-    )
+
+    @ManyToMany(mappedBy = "cards",
+    cascade = CascadeType.MERGE)
     private List<Deck> decks;
+
     @Transient
     public int quantity = 0;
 

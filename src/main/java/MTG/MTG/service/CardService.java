@@ -2,6 +2,8 @@ package MTG.MTG.service;
 
 import MTG.MTG.domain.Card;
 import MTG.MTG.domain.CardDao;
+import MTG.MTG.domain.DbConnector;
+import MTG.MTG.domain.Deck;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,9 @@ import javax.transaction.Transactional;
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -133,6 +138,7 @@ public class CardService {
         }
     }
 
+
     public void insertDualCardIntoDb() throws IOException {
         File file = new File("C:\\Users\\lug4r\\Desktop\\dual karty.txt");
         FileReader reader = new FileReader(file);
@@ -179,15 +185,32 @@ public class CardService {
         }
 
     }
+    public void setRelationsForCards(Deck deck, List<Deck> deckList) {
+        deck.getCards().stream().forEach(card -> card.setDecks(deckList));
+    }
+
+    public void clearQuantities(List<Card> cards) {
+        cards.stream().forEach(card -> card.setQuantity(0));
+    }
+
 
     public List<Card> getallCards() {
         List<Card> list = (List<Card>) cardDao.findAll();
         return list;
     }
 
+    public Card findCardById(Long id) {
+        return cardDao.findCardById(id);
+    }
+
     public List<Card> showFilterResults (String text) {
         return getallCards().stream()
                 .filter(s-> s.getName().contains(text) || s.getText().contains(text) || s.getType().contains(text))
                 .collect(Collectors.toList());
+    }
+
+    public Long fetchCardByName(String name) {
+        Long id = cardDao.fetchCardByName(name);
+        return id;
     }
 }

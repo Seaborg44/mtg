@@ -3,19 +3,30 @@ package MTG.MTG.domain;
 import lombok.Getter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
+@NamedQuery(
+        name = "Deck.fetchDecksIdsByUserId",
+        query = "SELECT id FROM Deck WHERE nutzer_id= :userId"
+)
 @Entity
 @Getter
 public class Deck {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+
     @ManyToMany (
-            mappedBy = "decks",
-            cascade = CascadeType.ALL
+            cascade = CascadeType.MERGE
     )
-    private List<Card> cards;
+    @JoinTable(
+            name = "CardsAndDecks",
+            joinColumns = {@JoinColumn(name = "DECK_ID", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "CARD_ID", referencedColumnName = "id", unique = false)}
+    )
+    private List<Card> cards = new ArrayList<>();
+
     private String deckName;
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "NUTZER_ID")

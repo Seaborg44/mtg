@@ -11,9 +11,9 @@ public class DbConnector {
 
     private DbConnector() throws SQLException {
         Properties connectionProps = new Properties();
-        connectionProps.put("user", "lug4ru");
+        connectionProps.put("user", "postgres");
         connectionProps.put("password", "molina12");
-        connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/mydatabase?serverTimezone=Europe/Warsaw&useSSL=False"
+        connection = DriverManager.getConnection("jdbc:postgresql://127.0.0.2:8000/MTG?serverTimezone=Europe/Warsaw&useSSL=False"
                 ,connectionProps);
     }
     public static DbConnector getInstance() throws SQLException {

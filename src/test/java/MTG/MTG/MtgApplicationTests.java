@@ -4,16 +4,15 @@ import MTG.MTG.domain.*;
 import MTG.MTG.service.CardService;
 import MTG.MTG.service.DeckService;
 import MTG.MTG.service.UserService;
-import org.json.JSONObject;
+import com.vaadin.flow.server.VaadinSession;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @SpringBootTest
@@ -37,28 +36,78 @@ class MtgApplicationTests {
 
 	@Test
 	public void testFlawedCards() {
-		Card card = new Card(30004l,"test1", "test1", "test1", "test1", "test1", "test1", "test1", "test1", "test1");
-		Card card2 = new Card(30005l,"test2", "test2", "test2", "test2", "test2", "test2", "test2", "test2", "test2");
-		Card card3 = new Card(30006l,"test3", "test3", "test3", "test3", "test3", "test3", "test3", "test3", "test3");
+		Card card = cardDao.findCardById(1312l);
+		Card card2 = cardDao.findCardById(1116l);
+		Card card3 = cardDao.findCardById(3004l);
 		List<Card> cards = new ArrayList<>();
 		Deck deck = new Deck();
 		List<Deck> deckList = new ArrayList<>();
+
+		Nutzer nutzer = new Nutzer("viktoria", "casablanca");
+		deck.setDeckName("test1");
+		deck.setCards(cards);
+		deck.setNutzer(nutzer);
 		card.setDecks(deckList);
 		card2.setDecks(deckList);
 		card3.setDecks(deckList);
 		cards.add(card);
+		cards.add(card);
 		cards.add(card2);
 		cards.add(card3);
-		Nutzer nutzer = new Nutzer();
-		nutzer.setId(25966l);
-		deck.setDeckName("test1");
-		deck.setCards(cards);
-		deck.setNutzer(nutzer);
 		deckList.add(deck);
-
-		nutzer.setName("viktoria");
-		nutzer.setPassword("viktor");
+		userService.saveUser(nutzer);
 		deckService.saveDeck(deck);
+	}
+
+	@Test
+	public void testFindCardByName() {
+		System.out.println(cardService.fetchCardByName("Magical Hacker"));
+	}
+
+	@Test
+	public void fetchCardsForUser() throws SQLException {
+		Nutzer nutzer = userService.findUserByName("Gregory");
+		List<Long> list = deckService.DecksIdsOfTheUser(nutzer.getId());
+		System.out.println(list.size());
+		System.out.println(deckService.fetchAllCardsInTheDeck(26045));
+		System.out.println(deckService.DecksOfTheUser(nutzer.getId()).size());
+	}
+
+	@Test
+	public void deckFromDbToGrid() throws SQLException {
+		List<Card> cards = deckService.fetchAllCardsInTheDeck(26045);
+		deckService.setDeck(deckService.processDeckFromDbToGrid(cards)) ;
+		System.out.println(deckService.getDeck().size());
+	}
+
+	@Test
+	public void deleteTest() throws SQLException {
+		deckService.deleteDeck(26074);
+	}
+
+	@Test
+	public void addDeckMultipleTimes() throws SQLException {
+
+		for (int i = 9; i < 15; i++) {
+			Card card = cardDao.findCardById(1542l);
+			Card card2 = cardDao.findCardById(1313l);
+			card.setQuantity(4);
+			card2.setQuantity(3);
+			deckService.getDeck().add(card);
+			deckService.getDeck().add(card2);
+
+			Deck deckToSave = new Deck();
+			List<Deck> deckList = new ArrayList<>();
+			Nutzer nutzer = userService.findUserByName("Gregory");
+			deckToSave.setNutzer(nutzer);
+			deckToSave.setDeckName("test " + i);
+			deckToSave.setCards(deckService.populateDeck(deckService.getDeck()));
+			cardService.setRelationsForCards(deckToSave, deckList);
+			deckService.saveDeck(deckToSave);
+			deckService.getDeck().clear();
+
+		}
+
 	}
 
 }

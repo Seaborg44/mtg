@@ -5,8 +5,16 @@ position: absolute;
 top: 10px;
 right: 25px;
 margin-bottom: 5px;
-
-
+}
+.navigate-to-login{
+width: 60px;
+height: 50px;
+position: absolute;
+top: 8px;
+right: 330px;
+margin-bottom: 5px;
+border:1px black solid;
+font-size: x-small;
 }
 .Deck-Grid{
 width: 340px;
@@ -15,8 +23,53 @@ position: absolute;
 bottom: 40px;
 right: 25px;
 font-size: x-small;
-
 border:1px black solid;
+}
+.Players-Deck{
+width: 140px;
+height: 100px;
+position: absolute;
+bottom: 40px;
+right: 380px;
+font-size: x-small;
+border:1px black solid;
+}
+.Players-Deck-Main{
+width: 180px;
+height: 250px;
+position: absolute;
+top: 150px;
+left: 10px;
+font-size: x-small;
+border:1px black solid;
+}
+.start-game-button {
+width: 50px;
+height: 50px;
+position: absolute;
+bottom: 50px;
+left: 10px;
+}
+.update-button{
+width: 95px;
+height: 40px;
+bottom:90px;
+right:530px;
+position: absolute;
+border:1px black solid;
+font-size: x-small;
+}
+.delete-button{
+bottom:90px;
+width: 95px;
+height: 40px;
+right:630px;
+position: absolute;
+border:1px black solid;
+font-size: x-small;
+}
+.Players-Deck-Header{
+font-size: 5px;
 }
 .Main-Grid{
 
@@ -30,9 +83,7 @@ border:1px black solid;
 font-size: small;
 left: 140px;
 bottom:56px;
-
 }
-
 .Add-DeckName-Field{
 color:black;
 position:absolute;
@@ -41,12 +92,101 @@ left: 260px;
 }
 .Accept-DeckName-Button{
 position:absolute;
-bottom:86px;
-left:460px;
+bottom:90px;
+left:500px;
 opacity:1;
 border:1px black solid;
 }
 .Remove-Button{
 bottom: 60px;
 border:1px black solid;
+}
+.Board{
+
+left: 252px;
+top: 80px;
+margin:0px;
+position: relative;
+display:inline-block;
+spacing:2px;
+}
+
+.message-list{
+overflow-y: scroll;
+}
+.player-two-hand{
+display: inline-block;
+left: 270px;
+position: absolute;
+top: 0px;
+background-color: grey;
+height: 120px;
+}
+.player-one-hand{
+display: inline-block;
+left: 270px;
+position: absolute;
+bottom:0px;
+height: 120px;
+background-color: grey;
+}
+.login-view{
+display: grid;
+}
+.Logged-User{
+position:relative;
+bottom:0px;
+left: 0px;
+font-size: x-small;
+}
+
+.username-textfield{
+position:absolute;
+width: 30%;
+left: 35%;
+}
+.login-view-header {
+position:absolute;
+left: 35%;
+}
+.passwordfield{
+position:absolute;
+width: 30%;
+left: 35%;
+}
+.Login-Button{
+position:absolute;
+width: 30%;
+left: 35%;
+}
+.Register-Button{
+position:absolute;
+width: 30%;
+left: 35%;
+}
+.Chat-Layout{
+position:absolute;
+width: 220px;
+height: 270px;
+bottom: 10px;
+right:10px;
+margin-top: 5px;
+
+}
+.message-list{
+font-size: x-small;
+width:100%;
+border:1px black solid;
+}
+.message-list>p:nth-child(odd){
+background-color:white;
+}
+.message-list>p:nth-child(even){
+background-color:gray;
+}
+.sendbutton{
+font-size:xx-small
+width: 40px;
+margin-right: 5px;
+background-color:blue;
 }
