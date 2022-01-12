@@ -6,7 +6,6 @@ import MTG.MTG.domain.Deck;
 import MTG.MTG.domain.DeckDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -17,13 +16,17 @@ import java.util.stream.Collectors;
 
 @Service
 public class DeckService {
+
     @Autowired
     DeckDao deckDao;
+
     @Autowired
     CardService cardService;
+
     List<Card> deck = new ArrayList<>();
 
     public DeckService() {
+
     }
 
     public void addCardToDeck (Card card) {
@@ -38,33 +41,37 @@ public class DeckService {
         this.deck = deck;
     }
 
-    public List<Long> DecksIdsOfTheUser(Long userId) {
+    public List<Long> getDecksIdsOfTheUser(Long userId) {
         List<Long> listOfIds = deckDao.fetchDecksIdsByUserId(userId);
-
         return listOfIds;
     }
 
-    public List<Deck> DecksOfTheUser(Long userId) {
+    public List<Deck> getDecksOfTheUser(Long userId) {
         List<Long> listOfIds = deckDao.fetchDecksIdsByUserId(userId);
         List<Deck> decks = new ArrayList<>();
+
         for (int i = 0; i < listOfIds.size(); i++) {
            int id = Math.toIntExact(listOfIds.get(i));
             Optional<Deck> deck = deckDao.findById(id);
             decks.add(deck.get());
         }
+
         return decks;
     }
 
     public List<Card> fetchAllCardsInTheDeck(int deckId) throws SQLException {
+
         List<Card> list = new ArrayList<>();
         DbConnector dbConnector = DbConnector.getInstance();
         String sql = "select card_id from cards_and_decks where deck_id = " + deckId;
         Statement statement = dbConnector.getConnection().createStatement();
         ResultSet rs = statement.executeQuery(sql);
+
         while(rs.next()) {
             Card card = cardService.findCardById(rs.getLong("card_id"));
             list.add(card);
         }
+
         return list;
     }
 
@@ -75,22 +82,27 @@ public class DeckService {
     public List<Card> processDeckFromDbToGrid (List<Card> deckcards) {
 
       List<Card> deckCards = deckcards.stream().map(card -> {
-            int i = (int) deckcards.stream().filter(card1 -> card.getName().equals(card1.getName())).count();
-          card.setQuantity(i);
+            int i = (int) deckcards.stream()
+                    .filter(card1 -> card.getName().equals(card1.getName()))
+                    .count();
+            card.setQuantity(i);
             return card;
-                }).collect(Collectors.toList());
-         int deckSize = deckCards.size();
-            for (int i = 0; i < deckSize; i++) {
-                Card card = deckCards.get(i);
-                for (int j = deckSize-1; j >= i; j--) {
-                    Card card1 = deckCards.get(j);
-                    if(card.getName().equals(card1.getName()) && deckCards.indexOf(card) != deckCards.indexOf(card1) ){
-                        deckCards.remove(card1);
-                        deckSize--;
-                    }
+      }).collect(Collectors.toList());
+
+      int deckSize = deckCards.size();
+
+      for (int i = 0; i < deckSize; i++) {
+          Card card = deckCards.get(i);
+            for (int j = deckSize-1; j >= i; j--) {
+                Card card1 = deckCards.get(j);
+                if (card.getName().equals(card1.getName()) && deckCards.indexOf(card) != deckCards.indexOf(card1)) {
+                    deckCards.remove(card1);
+                    deckSize--;
                 }
             }
-        return deckCards;
+      }
+
+      return deckCards;
     }
 
     public void deleteDeck (int deckId) throws SQLException {

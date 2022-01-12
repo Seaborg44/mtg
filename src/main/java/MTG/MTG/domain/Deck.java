@@ -13,6 +13,7 @@ import java.util.List;
 @Entity
 @Getter
 public class Deck {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;

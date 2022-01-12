@@ -14,9 +14,6 @@ import javax.transaction.Transactional;
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -66,12 +63,15 @@ public class CardService {
 
 
     public void insertAllCardsToDb() throws IOException {
+
         List<Integer> flawedCards = new ArrayList<>();
         List<String> listWithNames = getAllCardsNamesAsList();
         for (int i = 0; i < listWithNames.size(); i++) {
             try {
-                JSONObject json = readJsonFromUrl("https://api.scryfall.com/cards/named?fuzzy=" + listWithNames.get(i).replace(" ", "%20"));
-                if(json.toString().contains("card_faces")) {
+                JSONObject json = readJsonFromUrl("https://api.scryfall.com/cards/named?fuzzy="
+                                + listWithNames.get(i).replace(" ", "%20"));
+
+                if (json.toString().contains("card_faces")) {
                     int numberOfOccurrences = json.optJSONArray("card_faces").length();
                     insertTransformCardsIntoDb(json, numberOfOccurrences);
                     System.out.println(i);
@@ -79,7 +79,9 @@ public class CardService {
                 } else {
                     insertSingleCardIntoDb(json);
                     System.out.println(i);
-                    if(!isExecuted) { flawedCards.add(i);}
+                    if (!isExecuted) {
+                        flawedCards.add(i);
+                    }
                 }
             } catch (IOException e) {
                 continue;
@@ -140,6 +142,7 @@ public class CardService {
 
 
     public void insertDualCardIntoDb() throws IOException {
+
         File file = new File("C:\\Users\\lug4r\\Desktop\\dual karty.txt");
         FileReader reader = new FileReader(file);
         String all =  CardService.readAll(reader);
@@ -192,7 +195,6 @@ public class CardService {
     public void clearQuantities(List<Card> cards) {
         cards.stream().forEach(card -> card.setQuantity(0));
     }
-
 
     public List<Card> getallCards() {
         List<Card> list = (List<Card>) cardDao.findAll();

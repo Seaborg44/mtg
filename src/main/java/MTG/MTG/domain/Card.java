@@ -1,7 +1,6 @@
 package MTG.MTG.domain;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @NamedQuery(
@@ -10,6 +9,7 @@ import java.util.List;
 )
 @Entity
 public class Card {
+
     @Id
     private Long id;
     private String name;
@@ -43,6 +43,7 @@ public class Card {
     }
 
     public Card() {
+
     }
 
     public String getName() {
@@ -89,8 +90,6 @@ public class Card {
         return text;
     }
 
-
-
     public void setText(String text) {
         this.text = text;
     }
@@ -127,11 +126,9 @@ public class Card {
         this.quantity = quantity;
     }
 
-    @Transient
     public int getQuantity() {
         return quantity;
     }
-
 
     public void setDefense(String defense) {
         this.defense = defense;

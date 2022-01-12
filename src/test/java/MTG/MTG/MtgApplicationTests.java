@@ -4,14 +4,11 @@ import MTG.MTG.domain.*;
 import MTG.MTG.service.CardService;
 import MTG.MTG.service.DeckService;
 import MTG.MTG.service.UserService;
-import com.vaadin.flow.server.VaadinSession;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,10 +64,10 @@ class MtgApplicationTests {
 	@Test
 	public void fetchCardsForUser() throws SQLException {
 		Nutzer nutzer = userService.findUserByName("Gregory");
-		List<Long> list = deckService.DecksIdsOfTheUser(nutzer.getId());
+		List<Long> list = deckService.getDecksIdsOfTheUser(nutzer.getId());
 		System.out.println(list.size());
 		System.out.println(deckService.fetchAllCardsInTheDeck(26045));
-		System.out.println(deckService.DecksOfTheUser(nutzer.getId()).size());
+		System.out.println(deckService.getDecksOfTheUser(nutzer.getId()).size());
 	}
 
 	@Test

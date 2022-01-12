@@ -1,10 +1,7 @@
 package MTG.MTG.layout;
 
-import MTG.MTG.config.MainConfig;
 import MTG.MTG.domain.Nutzer;
 import MTG.MTG.service.AuthService;
-import MTG.MTG.service.CardService;
-import MTG.MTG.service.DeckService;
 import MTG.MTG.service.UserService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -16,9 +13,6 @@ import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.io.IOException;
 
 @Route("/")
 @StyleSheet("../CSS/stylesheet.css")
@@ -32,13 +26,11 @@ public class LoginView extends Div {
     private final AuthService authService;
     private UserService userService;
 
-
     public LoginView(AuthService authService, UserService userService) {
         this.userService = userService;
         this.authService = authService;
         addClassName("login-view");
         add(getHeader(), getUserName(), getPassword(), getButtonLogin(), getButtonRegister());
-
     }
 
     public TextField getUserName() {
@@ -79,7 +71,7 @@ public class LoginView extends Div {
         buttonRegister.getStyle().set("top", "55%");
         buttonRegister.addClickListener(buttonClickEvent -> {
             try {
-                if(userService.findUserByName(userName.getValue()) == null) {
+                if (userService.findUserByName(userName.getValue()) == null) {
                     Nutzer nutzer = new Nutzer(userName.getValue(), password.getValue());
                     userService.saveUser(nutzer);
                     VaadinSession.getCurrent().setAttribute(Nutzer.class, nutzer);

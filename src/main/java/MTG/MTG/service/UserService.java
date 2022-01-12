@@ -9,18 +9,21 @@ import java.util.Optional;
 
 @Service
 public class UserService {
+
     @Autowired
     UserDao userDao;
 
     public void saveUser(Nutzer nutzer) {
         userDao.save(nutzer);
     }
+
     public Optional<Nutzer> findUserById(Long id) {
         return userDao.findById(id);
     }
 
     public Nutzer findUserByName(String name) {
         Nutzer nutzer = userDao.getByUsername(name);
+
         return nutzer;
     }
 }

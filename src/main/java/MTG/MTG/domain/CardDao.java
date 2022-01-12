@@ -12,6 +12,4 @@ public interface CardDao extends JpaRepository<Card, Long> {
     Card findCardById(Long id);
 
     Long fetchCardByName(String name);
-
-
 }

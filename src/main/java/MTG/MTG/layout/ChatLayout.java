@@ -21,11 +21,9 @@ import reactor.core.publisher.UnicastProcessor;
 @Route("/chat")
 public class ChatLayout extends VerticalLayout {
 
-
     private final UnicastProcessor<ChatMessage> publisher;
     private final Flux<ChatMessage> messages;
     private final MessageList messageList = new MessageList();
-
 
     public ChatLayout(UnicastProcessor<ChatMessage> publisher, Flux<ChatMessage> messages) {
         this.publisher = publisher;
@@ -35,6 +33,7 @@ public class ChatLayout extends VerticalLayout {
         add(getMessageList());
         add(getInputLayout());
     }
+
     private Component getInputLayout() {
         HorizontalLayout inputLayout = new HorizontalLayout();
         TextField messageField = new TextField();

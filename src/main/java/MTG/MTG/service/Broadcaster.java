@@ -8,13 +8,12 @@ import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
 public class Broadcaster {
-    static Executor executor = Executors.newSingleThreadExecutor();
 
+    static Executor executor = Executors.newSingleThreadExecutor();
     static LinkedList<Consumer<String>> listeners = new LinkedList<>();
     static LinkedList<Consumer<DragImage>> listeners2 = new LinkedList<>();
 
-    public static synchronized Registration register(
-            Consumer<String> listener) {
+    public static synchronized Registration register(Consumer<String> listener) {
         listeners.add(listener);
         return () -> {
             synchronized (Broadcaster.class) {

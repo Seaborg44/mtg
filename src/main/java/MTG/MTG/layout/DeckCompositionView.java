@@ -18,12 +18,9 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-
 
 @Route("/deck")
 @StyleSheet("../CSS/stylesheet.css")
@@ -70,8 +67,10 @@ public class DeckCompositionView extends VerticalLayout {
         add(acceptDeckNameButton);
         add(notification);
         add(getRemoveButton());
-        if(VaadinSession.getCurrent().getAttribute(Nutzer.class) != null){add(getLoggedUserString());}
 
+        if (VaadinSession.getCurrent().getAttribute(Nutzer.class) != null) {
+            add(getLoggedUserString());
+        }
     }
 
     private Grid<Card> getMainGrid() {
@@ -79,12 +78,13 @@ public class DeckCompositionView extends VerticalLayout {
         grid.setColumns("name", "type", "manacost", "text", "aggro", "defense");
         setMaxWidth("70%");
         grid.getColumnByKey("text").setWidth("40%");
-        grid.addItemClickListener(l->{
-            cardAccess= l.getItem();
+        grid.addItemClickListener(clickEvent->{
+            cardAccess= clickEvent.getItem();
             image.setSrc(cardAccess.getUrl());
         });
         return grid;
     }
+
     public Button getNavigateToLoginButton() {
         navigateToLoginButton.addClassName("navigate-to-login");
         navigateToLoginButton.addClickListener(buttonClickEvent -> {
@@ -95,12 +95,15 @@ public class DeckCompositionView extends VerticalLayout {
                 UI.getCurrent().navigate("/");
             }
         });
-        if(loggedUser != null) {navigateToLoginButton.setText("Log out");}
+
+        if (loggedUser != null) {
+            navigateToLoginButton.setText("Log out");
+        }
         return navigateToLoginButton;
     }
 
     private String getLoggedUserString() {
-        loggedUserString ="Currently logged user: " + VaadinSession.getCurrent().getAttribute(Nutzer.class).getUsername();
+        loggedUserString = "Currently logged user: " + VaadinSession.getCurrent().getAttribute(Nutzer.class).getUsername();
         return loggedUserString;
     }
 
@@ -119,8 +122,8 @@ public class DeckCompositionView extends VerticalLayout {
 
     private Button getAddCardButton() {
         addCardButton.setClassName("add-card-button");
-        addCardButton.addClickListener(b-> {
-            if(deckService.getDeck().stream().anyMatch(card -> card.getName().equals(cardAccess.getName()))) {
+        addCardButton.addClickListener(clickEvent -> {
+            if (deckService.getDeck().stream().anyMatch(card -> card.getName().equals(cardAccess.getName()))) {
                 cardAccess = deckService.getDeck().stream().filter(card -> card.getName().equals(cardAccess.getName())).findAny().get();
                 deckService.addCardToDeck(cardAccess);
                 cardAccess.quantity++;
@@ -138,8 +141,8 @@ public class DeckCompositionView extends VerticalLayout {
     private Grid<Card> getDeckGrid() {
         deckGrid.setClassName("Deck-Grid");
         deckGrid.setColumns("quantity","name", "type", "manacost");
-        deckGrid.addItemClickListener(l->{
-            cardAccess= l.getItem();
+        deckGrid.addItemClickListener(clickEvent -> {
+            cardAccess= clickEvent.getItem();
             image.setSrc(cardAccess.getUrl());
         });
         deckGrid.appendFooterRow().getCells().get(0).setText("Total: ");
@@ -149,10 +152,9 @@ public class DeckCompositionView extends VerticalLayout {
 
     private Button getSaveDeckButton() {
         saveDeckButton.setClassName("Save-Deck-Button");
-        saveDeckButton.addClickListener(d->{
+        saveDeckButton.addClickListener(clickEvent -> {
             acceptDeckNameButton.setVisible(true);
             deckNametextField.setVisible(true);
-
         });
         return saveDeckButton;
     }
@@ -169,23 +171,23 @@ public class DeckCompositionView extends VerticalLayout {
      private Button getAcceptDeckNameButton() {
         acceptDeckNameButton.addClassNames("Accept-DeckName-Button");
         acceptDeckNameButton.setVisible(false);
-         acceptDeckNameButton.addClickListener(b-> {
-             if(loggedUser != null) {
+         acceptDeckNameButton.addClickListener(clickEvent -> {
+             if (loggedUser != null) {
                  valueFromTextField = deckNametextField.getValue();
-                    Deck deckToSave = new Deck();
-                    List<Deck> deckList = new ArrayList<>();
-                    deckToSave.setNutzer(loggedUser);
-                    deckToSave.setDeckName(valueFromTextField);
-                    deckToSave.setCards(deckService.populateDeck(deckService.getDeck()));
-                    cardService.setRelationsForCards(deckToSave, deckList);
-                    deckService.saveDeck(deckToSave);
-                    deckService.getDeck().clear();
+                 Deck deckToSave = new Deck();
+                 List<Deck> deckList = new ArrayList<>();
+                 deckToSave.setNutzer(loggedUser);
+                 deckToSave.setDeckName(valueFromTextField);
+                 deckToSave.setCards(deckService.populateDeck(deckService.getDeck()));
+                 cardService.setRelationsForCards(deckToSave, deckList);
+                 deckService.saveDeck(deckToSave);
+                 deckService.getDeck().clear();
                  deckGrid.getFooterRows().get(0).getCells().get(1).setText("0");
                  deckGrid.setItems(deckService.getDeck());
                  deckNametextField.setValue("");
                  deckNametextField.setVisible(false);
                  acceptDeckNameButton.setVisible(false);
-                 playersDeck.setItems(deckService.DecksOfTheUser(loggedUser.getId()));
+                 playersDeck.setItems(deckService.getDecksOfTheUser(loggedUser.getId()));
              } else {
                  Notification.show("You must be logged to be able to save the deck!");
              }
@@ -195,10 +197,10 @@ public class DeckCompositionView extends VerticalLayout {
 
     private Button getDeleteButton() {
         deleteButton.addClassName("delete-button");
-        deleteButton.addClickListener(event->{
+        deleteButton.addClickListener(event -> {
             try {
                 deckService.deleteDeck(chosenDeck.getId());
-                playersDeck.setItems(deckService.DecksOfTheUser(loggedUser.getId()));
+                playersDeck.setItems(deckService.getDecksOfTheUser(loggedUser.getId()));
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -212,10 +214,10 @@ public class DeckCompositionView extends VerticalLayout {
 
     public Button getRemoveButton() {
         removeButton.setClassName("Remove-Button");
-        removeButton.addClickListener(b->{
-           if(cardAccess.getQuantity() != 0) {
+        removeButton.addClickListener(event -> {
+           if (cardAccess.getQuantity() != 0) {
                cardAccess.quantity--;
-           } if (cardAccess.getQuantity() == 0){
+           } if (cardAccess.getQuantity() == 0) {
                deckService.getDeck().remove(cardAccess);
            }
             deckGrid.setItems(deckService.getDeck());
@@ -226,7 +228,7 @@ public class DeckCompositionView extends VerticalLayout {
 
     private Button getUpdateDeckButton() {
         updateDeckButton.addClassName("update-button");
-        updateDeckButton.addClickListener(event-> {
+        updateDeckButton.addClickListener(event -> {
             try {
                 Deck deckToSave = new Deck();
                 deckToSave.setDeckName(chosenDeck.getDeckName());
@@ -241,7 +243,7 @@ public class DeckCompositionView extends VerticalLayout {
                 deckService.getDeck().clear();
                 deckGrid.getFooterRows().get(0).getCells().get(1).setText("0");
                 deckGrid.setItems(deckService.getDeck());
-                playersDeck.setItems(deckService.DecksOfTheUser(loggedUser.getId()));
+                playersDeck.setItems(deckService.getDecksOfTheUser(loggedUser.getId()));
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -253,10 +255,12 @@ public class DeckCompositionView extends VerticalLayout {
         playersDeck.setClassName("Players-Deck");
         playersDeck.setColumns("deckName");
 
-        if(loggedUser != null) { playersDeck.setItems(deckService.DecksOfTheUser(loggedUser.getId())); }
+        if (loggedUser != null) {
+            playersDeck.setItems(deckService.getDecksOfTheUser(loggedUser.getId()));
+        }
 
-        playersDeck.addItemClickListener(l->{
-            chosenDeck = l.getItem();
+        playersDeck.addItemClickListener(clickEvent->{
+            chosenDeck = clickEvent.getItem();
             try {
                 List<Card> list = deckService.fetchAllCardsInTheDeck(chosenDeck.getId());
                 deckService.setDeck(deckService.processDeckFromDbToGrid(list));
@@ -276,17 +280,15 @@ public class DeckCompositionView extends VerticalLayout {
     public void updateDeckGrid(Card card, int index) {
         List<Card> list = deckService.getDeck();
         String name = card.getName();
-        int number = (int) list.stream().filter(card1 -> card1.getName().equals(name)).count();
-        if(number>=2){list.remove(index);}
+        int number = (int) list.stream()
+                .filter(card1 -> card1.getName().equals(name))
+                .count();
+
+        if (number>=2) {
+            list.remove(index);
+        }
+
         deckService.calculateQuantityOfCardsInDeck();
         deckGrid.setItems(list);
     }
-
-
-
-
-
-
-
-
 }

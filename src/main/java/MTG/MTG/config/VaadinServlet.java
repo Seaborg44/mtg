@@ -1,12 +1,10 @@
 package MTG.MTG.config;
 
 import com.vaadin.flow.server.*;
-
 import javax.servlet.ServletException;
 
 public class VaadinServlet extends com.vaadin.flow.server.VaadinServlet
-        implements SessionInitListener, SessionDestroyListener{
-
+        implements SessionInitListener, SessionDestroyListener {
 
     @Override
     protected VaadinServletService createServletService() throws ServletException, ServiceException {
@@ -20,8 +18,7 @@ public class VaadinServlet extends com.vaadin.flow.server.VaadinServlet
     }
 
     @Override
-    public void sessionInit(SessionInitEvent event)
-            throws ServiceException {
+    public void sessionInit(SessionInitEvent event) throws ServiceException {
 
     }
 

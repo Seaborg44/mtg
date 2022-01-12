@@ -9,6 +9,7 @@ import java.util.List;
 @Entity
 @Getter
 public class Nutzer {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -24,8 +25,8 @@ public class Nutzer {
     )
     private List<Deck> deckList;
 
-
     public Nutzer() {
+
     }
 
     public Nutzer(@Size(min = 3, max = 12) String username, @Size(min = 6, max = 32) String password) {
@@ -56,6 +57,5 @@ public class Nutzer {
     public boolean passwordCheck(String password1) {
         return DigestUtils.sha1Hex(password1).equals(password);
     }
-
 
 }

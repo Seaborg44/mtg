@@ -13,5 +13,4 @@ public interface DeckDao extends JpaRepository<Deck, Integer> {
 
     @Query
     List<Long> fetchDecksIdsByUserId(Long userId);
-
 }

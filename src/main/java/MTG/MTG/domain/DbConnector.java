@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 public class DbConnector {
+
     private Connection connection;
     private static DbConnector dbConnectorInstance;
 
@@ -16,8 +17,9 @@ public class DbConnector {
         connection = DriverManager.getConnection("jdbc:postgresql://127.0.0.2:8000/MTG?serverTimezone=Europe/Warsaw&useSSL=False"
                 ,connectionProps);
     }
+
     public static DbConnector getInstance() throws SQLException {
-        if(dbConnectorInstance==null) {
+        if (dbConnectorInstance==null) {
             dbConnectorInstance = new DbConnector();
         }
         return dbConnectorInstance;

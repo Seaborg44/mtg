@@ -2,13 +2,13 @@ package MTG.MTG.domain;
 
 import lombok.Getter;
 import lombok.Setter;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Getter
 @Setter
 public class ChatMessage {
+
     private String from;
     private String time;
     private String message;

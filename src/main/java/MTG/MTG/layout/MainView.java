@@ -15,11 +15,8 @@ import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.page.Push;
-import com.vaadin.flow.component.polymertemplate.EventHandler;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
@@ -27,8 +24,6 @@ import com.vaadin.flow.shared.Registration;
 import org.springframework.beans.factory.annotation.Autowired;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.UnicastProcessor;
-
-import javax.swing.*;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -95,7 +90,7 @@ public class MainView extends VerticalLayout {
     }
 
     private void assignPlayers() {
-        if(loggedUser.getUsername().equals(numberOfPlayers.get(0).getUsername())){
+        if (loggedUser.getUsername().equals(numberOfPlayers.get(0).getUsername())) {
             is1Playeractive = true;
         } else {
             is2Playeractive = true;
@@ -106,74 +101,73 @@ public class MainView extends VerticalLayout {
         board1.setId("1");
         board1.getStyle().set("background-color", "yellow");
 
-        try {
-            if(loggedUser.getUsername().equals(numberOfPlayers.get(1).getUsername())){
-                auxilliaryBoard1 = board1;
-                board1 = board4;
+            try {
+                if (loggedUser.getUsername().equals(numberOfPlayers.get(1).getUsername())) {
+                    auxilliaryBoard1 = board1;
+                    board1 = board4;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         return board1;
     }
+
     public Board getBoard2() {
         board2.setId("2");
         board2.getStyle().set("background-color", "red");
 
-        try {
-            if(loggedUser.getUsername().equals(numberOfPlayers.get(1).getUsername())){
-                auxilliaryBoard2 = board2;
-                board2 = board3;
+            try {
+                if (loggedUser.getUsername().equals(numberOfPlayers.get(1).getUsername())) {
+                    auxilliaryBoard2 = board2;
+                    board2 = board3;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         return board2;
     }
+
     public Board getBoard3() {
         board3.setId("3");
         board3.getStyle().set("background-color", "green");
 
-        try {
-            if(loggedUser.getUsername().equals(numberOfPlayers.get(1).getUsername())){
-                board3 = auxilliaryBoard2;
-
+            try {
+                if (loggedUser.getUsername().equals(numberOfPlayers.get(1).getUsername())) {
+                    board3 = auxilliaryBoard2;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         return board3;
     }
+
     public Board getBoard4() {
         board4.setId("4");
         board4.getStyle().set("background-color", "blue");
 
-        try {
-            if(loggedUser.getUsername().equals(numberOfPlayers.get(1).getUsername())){
-                board4 = auxilliaryBoard1;
-
+            try {
+                if (loggedUser.getUsername().equals(numberOfPlayers.get(1).getUsername())) {
+                    board4 = auxilliaryBoard1;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         return board4;
     }
 
-
     public VerticalLayout getPlayer1Hand() {
         player1Hand.setClassName("player-one-hand");
         player1Hand.setMaxWidth("60%");
-
         return player1Hand;
     }
+
     public VerticalLayout getPlayer2Hand() {
         player2Hand.setClassName("player-two-hand");
         player2Hand.setMaxWidth("60%");
-
         return player2Hand;
     }
 
@@ -181,7 +175,7 @@ public class MainView extends VerticalLayout {
         navigateToDeckButton.addClassName("navigate-to-deck");
         navigateToDeckButton.addClickListener(buttonClickEvent -> {
             UI.getCurrent().navigate("/deck");
-        });
+            });
         return navigateToDeckButton;
     }
 
@@ -196,10 +190,12 @@ public class MainView extends VerticalLayout {
         playersDeck.setClassName("Players-Deck-Main");
         playersDeck.setColumns("deckName");
 
-        if(loggedUser != null) { playersDeck.setItems(deckService.DecksOfTheUser(loggedUser.getId())); }
+        if (loggedUser != null) {
+            playersDeck.setItems(deckService.getDecksOfTheUser(loggedUser.getId()));
+        }
 
-        playersDeck.addItemClickListener(l->{
-            chosenDeck = l.getItem();
+        playersDeck.addItemClickListener(clickEvent->{
+            chosenDeck = clickEvent.getItem();
             try {
                 List<Card> list = deckService.fetchAllCardsInTheDeck(chosenDeck.getId());
                 deckService.setDeck(deckService.processDeckFromDbToGrid(list));
@@ -213,7 +209,7 @@ public class MainView extends VerticalLayout {
 
     private Button getStartGameButton() {
         startGameButton.addClassName("start-game-button");
-        startGameButton.addClickListener(event-> {
+        startGameButton.addClickListener(event -> {
             getHand();
         });
         return startGameButton;
@@ -226,8 +222,8 @@ public class MainView extends VerticalLayout {
         dragImage.setMaxHeight("100%");
         dragImage.setMaxWidth(60 + "px");
         dragImage.getStyle().set("bottom","10%");
-        dragImage.addClickListener(l->{
-            getMainImage().setSrc(l.getSource().getSrc());
+        dragImage.addClickListener(clickEvent->{
+            getMainImage().setSrc(clickEvent.getSource().getSrc());
         });
         return dragImage;
     }
@@ -252,7 +248,7 @@ public class MainView extends VerticalLayout {
         UI ui = attachEvent.getUI();
         broadcasterRegistration = Broadcaster.register(newMessage -> {
             spanToDelete = new Span(newMessage);
-            if(is1Playeractive) {
+            if (is1Playeractive) {
                 if (boardId.equals("1")) {
                     ui.access(() -> board1.add(spanToDelete));
                 }
@@ -266,7 +262,7 @@ public class MainView extends VerticalLayout {
                     ui.access(() -> board4.add(spanToDelete));
                 }
             }
-            if(is2Playeractive) {
+            if (is2Playeractive) {
                 if (boardId.equals("1")) {
                     ui.access(() -> board4.add(spanToDelete));
                 }
@@ -287,7 +283,6 @@ public class MainView extends VerticalLayout {
     protected void onDetach(DetachEvent detachEvent) {
         broadcasterRegistration.remove();
         broadcasterRegistration = null;
-
     }
 
 }
