@@ -7,7 +7,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @StyleSheet("../CSS/stylesheet.css")
-public class Board extends VerticalLayout implements DropTarget<VerticalLayout>{
+public class Board extends VerticalLayout implements DropTarget<VerticalLayout> {
 
     @Autowired
     public Board() {
@@ -16,12 +16,14 @@ public class Board extends VerticalLayout implements DropTarget<VerticalLayout>{
         this.setHeight(94 + "px");
         setActive(true);
 
-        addDropListener(event->{
+        addDropListener(event -> {
             MainView.boardId = this.getId().get();
-            Broadcaster.broadcast(String.valueOf(event.getDragSourceComponent().get()));
+            Broadcaster.broadcast("");
             this.add(event.getDragSourceComponent().get());
             this.remove(event.getDragSourceComponent().get());
         });
+
+
     }
 
 }

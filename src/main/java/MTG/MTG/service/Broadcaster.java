@@ -1,6 +1,5 @@
 package MTG.MTG.service;
 
-import MTG.MTG.domain.DragImage;
 import com.vaadin.flow.shared.Registration;
 import java.util.LinkedList;
 import java.util.concurrent.Executor;
@@ -11,7 +10,7 @@ public class Broadcaster {
 
     static Executor executor = Executors.newSingleThreadExecutor();
     static LinkedList<Consumer<String>> listeners = new LinkedList<>();
-    static LinkedList<Consumer<DragImage>> listeners2 = new LinkedList<>();
+    static LinkedList<Consumer<String>> listeners2 = new LinkedList<>();
 
     public static synchronized Registration register(Consumer<String> listener) {
         listeners.add(listener);
@@ -28,8 +27,7 @@ public class Broadcaster {
         }
     }
 
-    public static synchronized Registration registerImage(
-            Consumer<DragImage> listener2) {
+    public static synchronized Registration register2(Consumer<String> listener2) {
         listeners2.add(listener2);
         return () -> {
             synchronized (Broadcaster.class) {
@@ -38,10 +36,11 @@ public class Broadcaster {
         };
     }
 
-    public static synchronized void broadcastImage(DragImage image) {
-        for (Consumer<DragImage> listener2 : listeners2) {
-            executor.execute(() -> listener2.accept(image));
+    public static synchronized void broadcast2(String message) {
+        for (Consumer<String> listener2 : listeners2) {
+            executor.execute(() -> listener2.accept(message));
         }
     }
+
 }
 

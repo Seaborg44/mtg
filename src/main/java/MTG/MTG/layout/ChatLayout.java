@@ -38,12 +38,7 @@ public class ChatLayout extends VerticalLayout {
         HorizontalLayout inputLayout = new HorizontalLayout();
         TextField messageField = new TextField();
         messageField.setMaxWidth(150 + "px");
-        Button sendButton = new Button("Send");
-        sendButton.addClassName("sendbutton");
-        sendButton.setMaxWidth("10%");
-        sendButton.getStyle().set("height", 35 + "px");
-        sendButton.getStyle().set("bottom", 0 + "px");
-        inputLayout.getStyle().set("bottom", 0 + "px");
+        Button sendButton = createSendButton();
 
         inputLayout.add(messageField, sendButton);
         expand(messageField);
@@ -55,6 +50,15 @@ public class ChatLayout extends VerticalLayout {
 
         });
         return inputLayout;
+    }
+
+    private Button createSendButton() {
+        Button sendButton = new Button("Send");
+        sendButton.addClassName("sendbutton");
+        sendButton.setMaxWidth("10%");
+        sendButton.getStyle().set("height", 35 + "px");
+        sendButton.getStyle().set("bottom", 0 + "px");
+        return sendButton;
     }
 
     private MessageList getMessageList() {
