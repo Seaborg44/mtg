@@ -76,6 +76,7 @@ public class MainView extends VerticalLayout {
     Registration broadcasterRegistration;
     Registration broadcasterRegistration2;
     Random rnd = new Random();
+    private Button drawCardButton = new Button("Draw");
 
     @Autowired
     public MainView(CardService cardService, MainConfig mainConfig, DeckService deckService, UserService userService,
@@ -87,7 +88,7 @@ public class MainView extends VerticalLayout {
         this.deckService = deckService;
         this.userService = userService;
         assignPlayers();
-        add(getNavigateToDeck(), getStartGameButton());
+        add(getNavigateToDeck(), getStartGameButton(), getDrawCardButton());
         add(getMainImage());
         add(getPlayer1Hand(), getPlayer2Hand());
         add(new ChatLayout(mainConfig.publisher(), mainConfig.messages(mainConfig.publisher())));
@@ -204,6 +205,13 @@ public class MainView extends VerticalLayout {
         });
         return navigateToDeckButton;
     }
+    private Button getDrawCardButton() {
+        drawCardButton.addClassName("draw-card-button");
+        drawCardButton.addClickListener(click -> drawCard());
+
+        return drawCardButton;
+    }
+
 
     public Image getMainImage() {
         mainImage.setClassName("selected-image");
@@ -456,4 +464,15 @@ public class MainView extends VerticalLayout {
         }
     }
 
+
+    private void drawCard() {
+        Card card = Optional.of(chosenDeck.getCards().get(0)).orElseThrow(() -> new NoSuchElementException("no more cards in your deck"));
+        DragImage drawnCard = getHandImage(card);
+        player1Hand.add(drawnCard);
+
+        if (is1Playeractive) Broadcaster.broadcast2(drawnCard.getId().get(), 1);
+        if (is2Playeractive) Broadcaster.broadcast2(drawnCard.getId().get(), 0);
+
+        chosenDeck.getCards().remove(chosenDeck.getCards().get(0));
+    }
 }
