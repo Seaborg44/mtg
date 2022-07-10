@@ -43,6 +43,23 @@ left: 10px;
 font-size: x-small;
 border:1px black solid;
 }
+.graveyard{
+position: absolute;
+top: 240px;
+left: 10px;
+font-size: x-small;
+background-color: white;
+}
+.opp-graveyard{
+position: absolute;
+top: 50px;
+left: 10px;
+font-size: x-small;
+background-color: white;
+}
+.graveyard-grid{
+font-size: x-small;
+}
 .start-game-button {
 width: 50px;
 height: 50px;
@@ -50,6 +67,14 @@ position: absolute;
 bottom: 50px;
 left: 10px;
 }
+.draw-card-button{
+width: 50px;
+height: 50px;
+position: absolute;
+bottom: 50px;
+left: 100px;
+}
+
 .update-button{
 width: 95px;
 height: 40px;

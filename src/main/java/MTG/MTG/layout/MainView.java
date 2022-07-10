@@ -1,10 +1,7 @@
 package MTG.MTG.layout;
 
 import MTG.MTG.config.MainConfig;
-import MTG.MTG.domain.Card;
-import MTG.MTG.domain.Deck;
-import MTG.MTG.domain.DragImage;
-import MTG.MTG.domain.Nutzer;
+import MTG.MTG.domain.*;
 import MTG.MTG.service.Broadcaster;
 import MTG.MTG.service.CardService;
 import MTG.MTG.service.DeckService;
@@ -13,6 +10,8 @@ import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.HeaderRow;
+import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -67,6 +66,8 @@ public class MainView extends VerticalLayout {
     private Image handImage;
     private DragImage dragImage;
     private DragImage accessDragImage;
+    private Graveyard graveyard = new Graveyard();
+    private Graveyard oppsGraveyard = new Graveyard();
     private static String idOfDragImage = new String();
     public static String url;
     public static String mainImgUrl;
@@ -89,6 +90,7 @@ public class MainView extends VerticalLayout {
         this.userService = userService;
         assignPlayers();
         add(getNavigateToDeck(), getStartGameButton(), getDrawCardButton());
+        add(getGraveyard(), getOppsGraveyard());
         add(getMainImage());
         add(getPlayer1Hand(), getPlayer2Hand());
         add(new ChatLayout(mainConfig.publisher(), mainConfig.messages(mainConfig.publisher())));
@@ -112,10 +114,46 @@ public class MainView extends VerticalLayout {
         }
     }
 
+    public Graveyard getGraveyard() {
+        graveyard.setClassName("graveyard");
+        graveyard.setVisible(false);
+        graveyard.setMaxWidth("15%");
+        graveyard.setHeight(190 + "px");
+
+        graveyard.addDropListener(drop -> {
+            DragImage dragImage = (DragImage) drop.getDragSourceComponent().get();
+            CardGraveYardInfo cardInfo = new CardGraveYardInfo();
+            cardInfo.setName("ww");
+            cardInfo.setUrl(url);
+            cardInfo.setId(dragImage.getId().get());
+            cardInfo.setManacost("ss");
+            graveyard.getList().add(cardInfo);
+            if (is1Playeractive) Broadcaster.broadcast3(cardInfo, 1);
+            if (is2Playeractive) Broadcaster.broadcast3(cardInfo, 0);
+
+        });
+
+        return graveyard;
+    }
+
+    public Graveyard getOppsGraveyard() {
+        oppsGraveyard.setClassName("opp-graveyard");
+        oppsGraveyard.setVisible(false);
+        oppsGraveyard.setMaxWidth("15%");
+        oppsGraveyard.setHeight(190 + "px");
+
+        broadcasterRegistration = Broadcaster.register3(cgyi -> {
+            oppsGraveyard.getList().add(cgyi);
+            getUI().ifPresent(ui -> ui.access(() -> oppsGraveyard.getGrid().setItems(oppsGraveyard.getList())));
+        });
+
+        return oppsGraveyard;
+    }
+
     public Board getBoard1() {
         board1.setId("1");
         board1.getStyle().set("background-color", "yellow");
-        board1.addClickListener(click -> Notification.show(click.getSource().getId().get()));
+
         try {
             if (loggedUser.getUsername().equals(numberOfPlayers.get(0).getUsername())) {
                 auxilliaryBoard1 = board1;
@@ -131,7 +169,7 @@ public class MainView extends VerticalLayout {
     public Board getBoard2() {
         board2.setId("2");
         board2.getStyle().set("background-color", "red");
-        board2.addClickListener(click -> Notification.show(click.getSource().getId().get()));
+
         try {
             if (loggedUser.getUsername().equals(numberOfPlayers.get(0).getUsername())) {
                 auxilliaryBoard2 = board2;
@@ -147,7 +185,7 @@ public class MainView extends VerticalLayout {
     public Board getBoard3() {
         board3.setId("3");
         board3.getStyle().set("background-color", "green");
-        board3.addClickListener(click -> Notification.show(click.getSource().getId().get()));
+
         try {
             if (loggedUser.getUsername().equals(numberOfPlayers.get(0).getUsername())) {
                 board3 = auxilliaryBoard2;
@@ -162,7 +200,7 @@ public class MainView extends VerticalLayout {
     public Board getBoard4() {
         board4.setId("4");
         board4.getStyle().set("background-color", "blue");
-        board4.addClickListener(click -> Notification.show(click.getSource().getId().get()));
+
         try {
             if (loggedUser.getUsername().equals(numberOfPlayers.get(0).getUsername())) {
                 board4 = auxilliaryBoard1;
@@ -205,6 +243,7 @@ public class MainView extends VerticalLayout {
         });
         return navigateToDeckButton;
     }
+
     private Button getDrawCardButton() {
         drawCardButton.addClassName("draw-card-button");
         drawCardButton.addClickListener(click -> drawCard());
@@ -249,6 +288,9 @@ public class MainView extends VerticalLayout {
         startGameButton.addClassName("start-game-button");
         startGameButton.addClickListener(event -> {
             getHand();
+            playersDeck.setVisible(false);
+            graveyard.setVisible(true);
+            oppsGraveyard.setVisible(true);
         });
         return startGameButton;
     }
@@ -266,7 +308,6 @@ public class MainView extends VerticalLayout {
             getMainImage().setSrc(clickEvent.getSource().getSrc());
             this.url = clickEvent.getSource().getSrc();
             this.idOfDragImage = String.valueOf(clickEvent.getSource().getId().get());
-            Notification.show(clickEvent.getSource().getId().get());
         });
 
         dragImage.addDragStartListener(drag -> {
@@ -307,7 +348,6 @@ public class MainView extends VerticalLayout {
             getMainImage().setSrc(clickEvent.getSource().getSrc());
             this.url = clickEvent.getSource().getSrc();
             this.idOfDragImage = String.valueOf(clickEvent.getSource().getId().get());
-            Notification.show(clickEvent.getSource().getId().get());
         });
 
         dragImage2.addDragStartListener(drag -> {
@@ -358,7 +398,6 @@ public class MainView extends VerticalLayout {
                 }
             }
 
-
             deleteFromHand(ui, accessDragImage.getId().get());
         });
 
@@ -369,7 +408,6 @@ public class MainView extends VerticalLayout {
         broadcasterRegistration.remove();
         broadcasterRegistration = null;
     }
-
 
     private void deleteFromDragStartBoard(UI ui, String idOfBoard) {
 
