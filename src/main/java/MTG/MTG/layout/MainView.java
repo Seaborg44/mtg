@@ -64,18 +64,18 @@ public class MainView extends VerticalLayout {
     public static String dragStartBoardId = new String();
     private Button startGameButton = new Button("start");
     private Image handImage;
-    private DragImage dragImage;
     private DragImage accessDragImage;
     private Graveyard graveyard = new Graveyard();
     private Graveyard oppsGraveyard = new Graveyard();
     private static String idOfDragImage = new String();
     public static String url;
+    private static String nameOfDragImage = new String();
+    private static String manaCostOfDragImage = new String();
     public static String mainImgUrl;
     private final UnicastProcessor<DragImage> imagePublisher;
     private final Flux<DragImage> images;
     private UI mainUI;
     Registration broadcasterRegistration;
-    Registration broadcasterRegistration2;
     Random rnd = new Random();
     private Button drawCardButton = new Button("Draw");
 
@@ -123,14 +123,14 @@ public class MainView extends VerticalLayout {
         graveyard.addDropListener(drop -> {
             DragImage dragImage = (DragImage) drop.getDragSourceComponent().get();
             CardGraveYardInfo cardInfo = new CardGraveYardInfo();
-            cardInfo.setName("ww");
-            cardInfo.setUrl(url);
+            cardInfo.setName(dragImage.getName());
+            cardInfo.setUrl(dragImage.getUrl());
             cardInfo.setId(dragImage.getId().get());
-            cardInfo.setManacost("ss");
+            cardInfo.setManacost(dragImage.getManaCost());
             graveyard.getList().add(cardInfo);
             if (is1Playeractive) Broadcaster.broadcast3(cardInfo, 1);
             if (is2Playeractive) Broadcaster.broadcast3(cardInfo, 0);
-
+            getUI().ifPresent(ui -> ui.access(() -> deleteFromDragStartBoard(ui, dragStartBoardId)));
         });
 
         return graveyard;
@@ -145,6 +145,7 @@ public class MainView extends VerticalLayout {
         broadcasterRegistration = Broadcaster.register3(cgyi -> {
             oppsGraveyard.getList().add(cgyi);
             getUI().ifPresent(ui -> ui.access(() -> oppsGraveyard.getGrid().setItems(oppsGraveyard.getList())));
+            getUI().ifPresent(ui -> ui.access(() -> deleteFromDragStartBoard(ui, dragStartBoardId)));
         });
 
         return oppsGraveyard;
@@ -226,10 +227,10 @@ public class MainView extends VerticalLayout {
         player2Hand.setClassName("player-two-hand");
         player2Hand.setMaxWidth("60%");
         player2Hand.getStyle().set("background-color", "black");
-        broadcasterRegistration = Broadcaster.register2(id -> {
-            DragImage dragImage = createDragImage();
-            dragImage.setSrc("https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/513b7bfa-42c9-4d08-ad6c-8e5d478c42d3/dalfpib-83f22b02-5802-40b4-901b-3eecf0ca2058.png/v1/fill/w_1024,h_1463,q_80,strp/unofficial_magic_the_gathering_six_color_card_back_by_lordnyriox_dalfpib-fullview.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9MTQ2MyIsInBhdGgiOiJcL2ZcLzUxM2I3YmZhLTQyYzktNGQwOC1hZDZjLThlNWQ0NzhjNDJkM1wvZGFsZnBpYi04M2YyMmIwMi01ODAyLTQwYjQtOTAxYi0zZWVjZjBjYTIwNTgucG5nIiwid2lkdGgiOiI8PTEwMjQifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6aW1hZ2Uub3BlcmF0aW9ucyJdfQ.OGsglye34mbde4lkXNsDFFCl83jSzl1zNBLep-hhyKY");
-            dragImage.setId(id);
+        broadcasterRegistration = Broadcaster.register4(broadcastCardTemplate -> {
+            DragImage dragImage = getHandImage(broadcastCardTemplate.getCard());
+            dragImage.setId(broadcastCardTemplate.getId());
+            dragImage.setSrc(broadcastCardTemplate.getCard().getUrl());
             getUI().ifPresent(ui -> ui.access(() -> player2Hand.add(dragImage)));
         });
 
@@ -296,25 +297,30 @@ public class MainView extends VerticalLayout {
     }
 
     private DragImage getHandImage(Card card) {
-        dragImage = new DragImage();
+        DragImage dragImage = new DragImage();
         dragImage.addClassName("hand-image");
         dragImage.setSrc(card.getUrl());
+        dragImage.setUrl(card.getUrl());
+        dragImage.setManaCost(card.getManacost());
+        dragImage.setName(card.getName());
         dragImage.setMaxHeight("100%");
         dragImage.setMaxWidth(60 + "px");
         dragImage.setId(String.valueOf(rnd.nextInt(44, 4444444)));
+        dragImage.setIdentificator(dragImage.getId().get());
         dragImage.getStyle().set("bottom", "10%");
 
         dragImage.addClickListener(clickEvent -> {
             getMainImage().setSrc(clickEvent.getSource().getSrc());
             this.url = clickEvent.getSource().getSrc();
             this.idOfDragImage = String.valueOf(clickEvent.getSource().getId().get());
+            Notification.show(clickEvent.getSource().getId().get());
         });
 
         dragImage.addDragStartListener(drag -> {
-            getMainImage().setSrc(drag.getSource().getSrc());
-            this.url = drag.getSource().getSrc();
-            this.idOfDragImage = String.valueOf(drag.getSource().getId().get());
-            this.dragStartBoardId = drag.getSource().getParent().get().getId().orElseThrow(NoSuchElementException::new);
+            DragImage draggedImage = (DragImage) drag.getSource();
+            getMainImage().setSrc(draggedImage.getSrc());
+            this.idOfDragImage = String.valueOf(draggedImage.getId().get());
+            this.dragStartBoardId = draggedImage.getParent().get().getId().orElseThrow(NoSuchElementException::new);
         });
 
         return dragImage;
@@ -325,9 +331,10 @@ public class MainView extends VerticalLayout {
         for (int i = 0; i < 7; i++) {
             Card card = chosenDeck.getCards().get(rnd.nextInt(0, chosenDeck.getCards().size()));
             DragImage dragImage = getHandImage(card);
+            BroadcastCardTemplate bcTemplapte = new BroadcastCardTemplate(dragImage.getId().get(), card);
             player1Hand.add(dragImage);
-            if (is1Playeractive) Broadcaster.broadcast2(dragImage.getId().get(), 1);
-            if (is2Playeractive) Broadcaster.broadcast2(dragImage.getId().get(), 0);
+            if (is1Playeractive) Broadcaster.broadcast4(bcTemplapte, 1);
+            if (is2Playeractive) Broadcaster.broadcast4(bcTemplapte, 0);
 
             if (card.getQuantity() > 1) {
                 card.quantity--;
@@ -339,19 +346,24 @@ public class MainView extends VerticalLayout {
     }
 
 
-    private DragImage createDragImage() {
+    private DragImage createDragImage(DragImage droppedDragImage) {
         DragImage dragImage2 = new DragImage();
         dragImage2.setMaxHeight("100%");
         dragImage2.setMaxWidth(60 + "px");
-        dragImage2.setId(String.valueOf(rnd.nextInt(44, 4444444)));
+        dragImage2.setId(droppedDragImage.getId().get());
+        dragImage2.setSrc(droppedDragImage.getSrc());
+        dragImage2.setManaCost(droppedDragImage.getManaCost());
+        dragImage2.setName(droppedDragImage.getName());
+        dragImage2.setUrl(droppedDragImage.getUrl());
+
         dragImage2.addClickListener(clickEvent -> {
             getMainImage().setSrc(clickEvent.getSource().getSrc());
-            this.url = clickEvent.getSource().getSrc();
-            this.idOfDragImage = String.valueOf(clickEvent.getSource().getId().get());
+            Notification.show(clickEvent.getSource().getId().get());
         });
 
         dragImage2.addDragStartListener(drag -> {
-            this.url = drag.getSource().getSrc();
+            getMainImage().setSrc(drag.getSource().getSrc());
+            Notification.show(drag.getSource().getId().get());
             this.idOfDragImage = String.valueOf(drag.getSource().getId().get());
             this.dragStartBoardId = drag.getSource().getParent().get().getId().orElseThrow(NoSuchElementException::new);
         });
@@ -363,10 +375,10 @@ public class MainView extends VerticalLayout {
     protected void onAttach(AttachEvent attachEvent) {
         UI ui = attachEvent.getUI();
 
-        broadcasterRegistration = Broadcaster.register(newMessage -> {
-            accessDragImage = createDragImage();
+        broadcasterRegistration = Broadcaster.register(dragImage -> {
+            accessDragImage = createDragImage(dragImage);
             accessDragImage.setId(idOfDragImage);
-            accessDragImage.setSrc(url);
+            accessDragImage.setSrc(dragImage.getSrc());
             deleteFromDragStartBoard(ui, dragStartBoardId);
             if (is2Playeractive) {
                 if (boardId.equals("1")) {
@@ -506,10 +518,11 @@ public class MainView extends VerticalLayout {
     private void drawCard() {
         Card card = Optional.of(chosenDeck.getCards().get(0)).orElseThrow(() -> new NoSuchElementException("no more cards in your deck"));
         DragImage drawnCard = getHandImage(card);
+        BroadcastCardTemplate bcTemplate = new BroadcastCardTemplate(drawnCard.getId().get(), card);
         player1Hand.add(drawnCard);
 
-        if (is1Playeractive) Broadcaster.broadcast2(drawnCard.getId().get(), 1);
-        if (is2Playeractive) Broadcaster.broadcast2(drawnCard.getId().get(), 0);
+        if (is1Playeractive) Broadcaster.broadcast4(bcTemplate, 1);
+        if (is2Playeractive) Broadcaster.broadcast4(bcTemplate, 0);
 
         chosenDeck.getCards().remove(chosenDeck.getCards().get(0));
     }

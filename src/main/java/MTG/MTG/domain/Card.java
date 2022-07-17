@@ -1,5 +1,10 @@
 package MTG.MTG.domain;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -8,6 +13,10 @@ import java.util.List;
         query = "SELECT id FROM Card WHERE name= :name"
 )
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@ToString
 public class Card {
 
     @Id
@@ -21,6 +30,9 @@ public class Card {
     private String color;
     private String aggro;
     private String defense;
+
+    @Transient
+    private String stringId;
 
     @ManyToMany(mappedBy = "cards",
     cascade = CascadeType.MERGE)
@@ -40,112 +52,5 @@ public class Card {
         this.text = text;
         this.aggro = aggro;
         this.defense = defense;
-    }
-
-    public Card() {
-
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public String getManacost() {
-        return manacost;
-    }
-
-    public void setManacost(String manacost) {
-        this.manacost = manacost;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
-    }
-
-    public String getAggro() {
-        return aggro;
-    }
-
-    public void setAggro(String aggro) {
-        this.aggro = aggro;
-    }
-
-    public String getDefense() {
-        return defense;
-    }
-
-    public List<Deck> getDecks() {
-        return decks;
-    }
-
-    public void setDecks(List<Deck> decks) {
-        this.decks = decks;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setDefense(String defense) {
-        this.defense = defense;
-    }
-
-    @Override
-    public String toString() {
-        return "Card{" +
-                "name='" + name + '\'' +
-                ", id='" + uuid + '\'' +
-                ", url='" + url + '\'' +
-                ", manacost='" + manacost + '\'' +
-                ", type='" + type + '\'' +
-                ", text='" + text + '\'' +
-                ", color='" + color + '\'' +
-                ", aggro='" + aggro + '\'' +
-                ", defense='" + defense + '\'' +
-                '}';
     }
 }

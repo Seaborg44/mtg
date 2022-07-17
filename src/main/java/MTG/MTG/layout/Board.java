@@ -1,5 +1,6 @@
 package MTG.MTG.layout;
 
+import MTG.MTG.domain.DragImage;
 import MTG.MTG.service.Broadcaster;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.dnd.DragSource;
@@ -17,10 +18,9 @@ public class Board extends VerticalLayout implements DropTarget<VerticalLayout>,
         this.setHeight(94 + "px");
         setActive(true);
 
-
         addDropListener(event -> {
             MainView.boardId = this.getId().get();
-            Broadcaster.broadcast("");
+            Broadcaster.broadcast((DragImage) event.getDragSourceComponent().get());
             this.add(event.getDragSourceComponent().get());
             this.remove(event.getDragSourceComponent().get());
         });

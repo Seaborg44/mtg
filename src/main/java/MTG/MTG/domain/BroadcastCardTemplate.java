@@ -7,11 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CardGraveYardInfo {
+public class BroadcastCardTemplate {
+
     private String id;
-    private String url;
-    private String manacost;
-    private String name;
-
-
+    private Card card;
 }

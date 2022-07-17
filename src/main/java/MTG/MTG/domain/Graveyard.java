@@ -5,6 +5,7 @@ import com.vaadin.flow.component.dnd.DragSource;
 import com.vaadin.flow.component.dnd.DropTarget;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,6 +32,10 @@ public class Graveyard extends VerticalLayout implements DropTarget<VerticalLayo
         grid.setClassName("graveyard-grid");
         grid.setColumns("manacost", "name");
         grid.setSizeFull();
+
+        grid.addItemClickListener(click -> {
+            Notification.show(click.getItem().getId() + click.getItem().getUrl());
+        });
 
         return grid;
     }

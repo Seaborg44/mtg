@@ -1,7 +1,9 @@
 package MTG.MTG.service;
 
+import MTG.MTG.domain.BroadcastCardTemplate;
 import MTG.MTG.domain.Card;
 import MTG.MTG.domain.CardGraveYardInfo;
+import MTG.MTG.domain.DragImage;
 import MTG.MTG.layout.MainView;
 import com.vaadin.flow.shared.Registration;
 import io.netty.handler.codec.http.HttpHeaders;
@@ -14,11 +16,12 @@ import java.util.function.Consumer;
 public class Broadcaster {
 
     static Executor executor = Executors.newSingleThreadExecutor();
-    static LinkedList<Consumer<String>> listeners = new LinkedList<>();
-    public static LinkedList<Consumer<String>> listeners2 = new LinkedList<>();
-    public static LinkedList<Consumer<CardGraveYardInfo>> listeners3 = new LinkedList<>();
+    static LinkedList<Consumer<DragImage>> listeners = new LinkedList<>();
+    static LinkedList<Consumer<String>> listeners2 = new LinkedList<>();
+    static LinkedList<Consumer<CardGraveYardInfo>> listeners3 = new LinkedList<>();
+    static LinkedList<Consumer<BroadcastCardTemplate>> listeners4 = new LinkedList<>();
 
-    public static synchronized Registration register(Consumer<String> listener) {
+    public static synchronized Registration register(Consumer<DragImage> listener) {
         listeners.add(listener);
         return () -> {
             synchronized (Broadcaster.class) {
@@ -27,8 +30,8 @@ public class Broadcaster {
         };
     }
 
-    public static synchronized void broadcast(String message) {
-        for (Consumer<String> listener : listeners) {
+    public static synchronized void broadcast(DragImage message) {
+        for (Consumer<DragImage> listener : listeners) {
             executor.execute(() -> listener.accept(message));
         }
     }
@@ -59,7 +62,18 @@ public class Broadcaster {
         executor.execute(() -> listeners3.get(playerNr).accept(info));
     }
 
+    public static synchronized Registration register4(Consumer<BroadcastCardTemplate> listener4) {
+        listeners4.add(listener4);
+        return () -> {
+            synchronized (Broadcaster.class) {
+                listeners4.remove(listener4);
+            }
+        };
+    }
 
+    public static synchronized void broadcast4(BroadcastCardTemplate card, int playerNr) {
+        executor.execute(() -> listeners4.get(playerNr).accept(card));
+    }
 }
 
 
