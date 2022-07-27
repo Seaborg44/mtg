@@ -34,4 +34,6 @@ public class DragImage extends Image implements DragSource<Image> {
         setDraggable(true);
         setDragData(this);
     }
+
+
 }

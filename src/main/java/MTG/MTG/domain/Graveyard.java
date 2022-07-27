@@ -32,11 +32,7 @@ public class Graveyard extends VerticalLayout implements DropTarget<VerticalLayo
         grid.setClassName("graveyard-grid");
         grid.setColumns("manacost", "name");
         grid.setSizeFull();
-
-        grid.addItemClickListener(click -> {
-            Notification.show(click.getItem().getId() + click.getItem().getUrl());
-        });
-
+        grid.addItemClickListener(item -> Notification.show(item.getItem().getId() + " " + item.getItem().getUrl()));
         return grid;
     }
 }
