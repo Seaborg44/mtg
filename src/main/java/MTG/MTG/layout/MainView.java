@@ -369,7 +369,7 @@ public class MainView extends VerticalLayout {
                             .filter(f -> f.getClass().equals(DragImage.class))
                             .filter(f -> f.getId().get().equals(idOfDragImage))
                             .findFirst();
-                    if (diToRemove != null)
+                    if (diToRemove.isPresent())
                         ui.access(() -> board1.remove(diToRemove.get()));
                     break;
                 case "3":
@@ -377,7 +377,7 @@ public class MainView extends VerticalLayout {
                             .filter(f -> f.getClass().equals(DragImage.class))
                             .filter(f -> f.getId().get().equals(idOfDragImage))
                             .findFirst();
-                    if (diToRemove2 != null)
+                    if (diToRemove2.isPresent())
                         ui.access(() -> board2.remove(diToRemove2.get()));
                     break;
                 case "2":
@@ -385,7 +385,7 @@ public class MainView extends VerticalLayout {
                             .filter(f -> f.getClass().equals(DragImage.class))
                             .filter(f -> f.getId().get().equals(idOfDragImage))
                             .findFirst();
-                    if (diToRemove3 != null)
+                    if (diToRemove3.isPresent())
                         ui.access(() -> board3.remove(diToRemove3.get()));
                     break;
                 case "1":
@@ -393,7 +393,7 @@ public class MainView extends VerticalLayout {
                             .filter(f -> f.getClass().equals(DragImage.class))
                             .filter(f -> f.getId().get().equals(idOfDragImage))
                             .findFirst();
-                    if (diToRemove4 != null)
+                    if (diToRemove4.isPresent())
                         ui.access(() -> board4.remove(diToRemove4.get()));
                     break;
                 default:
@@ -406,7 +406,7 @@ public class MainView extends VerticalLayout {
                             .filter(f -> f.getClass().equals(DragImage.class))
                             .filter(f -> f.getId().get().equals(idOfDragImage))
                             .findFirst();
-                    if (diToRemove != null)
+                    if (diToRemove.isPresent())
                         ui.access(() -> board1.remove(diToRemove.get()));
                     break;
                 case "2":
@@ -414,7 +414,7 @@ public class MainView extends VerticalLayout {
                             .filter(f -> f.getClass().equals(DragImage.class))
                             .filter(f -> f.getId().get().equals(idOfDragImage))
                             .findFirst();
-                    if (diToRemove2 != null)
+                    if (diToRemove2.isPresent())
                         ui.access(() -> board2.remove(diToRemove2.get()));
                     break;
                 case "3":
@@ -422,7 +422,7 @@ public class MainView extends VerticalLayout {
                             .filter(f -> f.getClass().equals(DragImage.class))
                             .filter(f -> f.getId().get().equals(idOfDragImage))
                             .findFirst();
-                    if (diToRemove3 != null)
+                    if (diToRemove3.isPresent())
                         ui.access(() -> board3.remove(diToRemove3.get()));
                     break;
                 case "4":
@@ -430,7 +430,7 @@ public class MainView extends VerticalLayout {
                             .filter(f -> f.getClass().equals(DragImage.class))
                             .filter(f -> f.getId().get().equals(idOfDragImage))
                             .findFirst();
-                    if (diToRemove4 != null)
+                    if (diToRemove4.isPresent())
                         ui.access(() -> board4.remove(diToRemove4.get()));
                     break;
                 default:
@@ -443,16 +443,12 @@ public class MainView extends VerticalLayout {
 
 
     public void deleteFromHand(UI ui, String id) {
-        Optional<Component> cardToRemove = Optional.ofNullable(player2Hand.getChildren().collect(Collectors.toList()).stream()
+        player2Hand.getChildren().collect(Collectors.toList()).stream()
                 .filter(f -> f.getId().get().equals(id))
                 .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("could not find an element with such id: " + id)));
-        System.out.println(cardToRemove);
-        if (cardToRemove != null) {
-            ui.access(() -> player2Hand.remove(cardToRemove.get()));
-        }
-    }
+                .ifPresent(component -> getUI().ifPresent(ui1 -> ui1.access(() -> player2Hand.remove(component))));
 
+    }
 
     private void drawCard() {
         Card card = Optional.of(chosenDeck.getCards().get(0)).orElseThrow(() -> new NoSuchElementException("no more cards in your deck"));
