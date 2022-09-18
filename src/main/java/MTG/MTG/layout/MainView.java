@@ -125,7 +125,7 @@ public class MainView extends VerticalLayout {
             graveyard.getList().add(cardInfo);
             if (is1Playeractive) Broadcaster.broadcast3(cardInfo, 1);
             if (is2Playeractive) Broadcaster.broadcast3(cardInfo, 0);
-            getUI().ifPresent(ui -> ui.access(() -> deleteFromDragStartBoard(ui, dragStartBoardId)));
+//            getUI().ifPresent(ui -> ui.access(() -> deleteFromDragStartBoard(ui, dragStartBoardId)));
         });
 
         return graveyard;
@@ -140,7 +140,7 @@ public class MainView extends VerticalLayout {
         broadcasterRegistration = Broadcaster.register3(cgyi -> {
             oppsGraveyard.getList().add(cgyi);
             getUI().ifPresent(ui -> ui.access(() -> oppsGraveyard.getGrid().setItems(oppsGraveyard.getList())));
-            getUI().ifPresent(ui -> ui.access(() -> deleteFromDragStartBoard(ui, dragStartBoardId)));
+//            getUI().ifPresent(ui -> ui.access(() -> deleteFromDragStartBoard(ui, dragStartBoardId)));
         });
 
         return oppsGraveyard;
@@ -318,34 +318,34 @@ public class MainView extends VerticalLayout {
             accessDragImage = cardService.cloneDragImage(dragImage);
             accessDragImage.setId(idOfDragImage);
             accessDragImage.setSrc(dragImage.getSrc());
-            deleteFromDragStartBoard(ui, dragStartBoardId);
+//            deleteFromDragStartBoard(ui, dragStartBoardId);
             if (is2Playeractive) {
                 if (boardId.equals("1")) {
-                    ui.access(() -> board1.add(accessDragImage));
+                    Optional.ofNullable(accessDragImage).ifPresent(accessImage -> ui.access(() -> board1.add(accessImage)));
                 }
                 if (boardId.equals("2")) {
-                    ui.access(() -> board2.add(accessDragImage));
+                    Optional.ofNullable(accessDragImage).ifPresent(accessImage -> ui.access(() -> board2.add(accessImage)));
                 }
                 if (boardId.equals("3")) {
-                    ui.access(() -> board3.add(accessDragImage));
+                    Optional.ofNullable(accessDragImage).ifPresent(accessImage -> ui.access(() -> board3.add(accessImage)));
                 }
                 if (boardId.equals("4")) {
-                    ui.access(() -> board4.add(accessDragImage));
+                    Optional.ofNullable(accessDragImage).ifPresent(accessImage -> ui.access(() -> board4.add(accessImage)));
                 }
             }
 
             if (is1Playeractive) {
                 if (boardId.equals("1")) {
-                    ui.access(() -> board4.add(accessDragImage));
+                    Optional.ofNullable(accessDragImage).ifPresent(accessImage -> ui.access(() -> board4.add(accessImage)));
                 }
                 if (boardId.equals("2")) {
-                    ui.access(() -> board3.add(accessDragImage));
+                    Optional.ofNullable(accessDragImage).ifPresent(accessImage -> ui.access(() -> board3.add(accessImage)));
                 }
                 if (boardId.equals("3")) {
-                    ui.access(() -> board2.add(accessDragImage));
+                    Optional.ofNullable(accessDragImage).ifPresent(accessImage -> ui.access(() -> board2.add(accessImage)));
                 }
                 if (boardId.equals("4")) {
-                    ui.access(() -> board1.add(accessDragImage));
+                    Optional.ofNullable(accessDragImage).ifPresent(accessImage -> ui.access(() -> board1.add(accessImage)));
                 }
             }
 
@@ -360,93 +360,95 @@ public class MainView extends VerticalLayout {
         broadcasterRegistration = null;
     }
 
-    private void deleteFromDragStartBoard(UI ui, String idOfBoard) {
-
-        try {
-            switch (idOfBoard) {
-                case "4":
-                    Optional<Component> diToRemove = board1.getChildren()
-                            .filter(f -> f.getClass().equals(DragImage.class))
-                            .filter(f -> f.getId().get().equals(idOfDragImage))
-                            .findFirst();
-                    if (diToRemove.isPresent())
-                        ui.access(() -> board1.remove(diToRemove.get()));
-                    break;
-                case "3":
-                    Optional<Component> diToRemove2 = board2.getChildren()
-                            .filter(f -> f.getClass().equals(DragImage.class))
-                            .filter(f -> f.getId().get().equals(idOfDragImage))
-                            .findFirst();
-                    if (diToRemove2.isPresent())
-                        ui.access(() -> board2.remove(diToRemove2.get()));
-                    break;
-                case "2":
-                    Optional<Component> diToRemove3 = board3.getChildren()
-                            .filter(f -> f.getClass().equals(DragImage.class))
-                            .filter(f -> f.getId().get().equals(idOfDragImage))
-                            .findFirst();
-                    if (diToRemove3.isPresent())
-                        ui.access(() -> board3.remove(diToRemove3.get()));
-                    break;
-                case "1":
-                    Optional<Component> diToRemove4 = board4.getChildren()
-                            .filter(f -> f.getClass().equals(DragImage.class))
-                            .filter(f -> f.getId().get().equals(idOfDragImage))
-                            .findFirst();
-                    if (diToRemove4.isPresent())
-                        ui.access(() -> board4.remove(diToRemove4.get()));
-                    break;
-                default:
-                    ui.access(() -> Notification.show("no id present"));
-            }
-
-            switch (idOfBoard) {
-                case "1":
-                    Optional<Component> diToRemove = board1.getChildren()
-                            .filter(f -> f.getClass().equals(DragImage.class))
-                            .filter(f -> f.getId().get().equals(idOfDragImage))
-                            .findFirst();
-                    if (diToRemove.isPresent())
-                        ui.access(() -> board1.remove(diToRemove.get()));
-                    break;
-                case "2":
-                    Optional<Component> diToRemove2 = board2.getChildren()
-                            .filter(f -> f.getClass().equals(DragImage.class))
-                            .filter(f -> f.getId().get().equals(idOfDragImage))
-                            .findFirst();
-                    if (diToRemove2.isPresent())
-                        ui.access(() -> board2.remove(diToRemove2.get()));
-                    break;
-                case "3":
-                    Optional<Component> diToRemove3 = board3.getChildren()
-                            .filter(f -> f.getClass().equals(DragImage.class))
-                            .filter(f -> f.getId().get().equals(idOfDragImage))
-                            .findFirst();
-                    if (diToRemove3.isPresent())
-                        ui.access(() -> board3.remove(diToRemove3.get()));
-                    break;
-                case "4":
-                    Optional<Component> diToRemove4 = board4.getChildren()
-                            .filter(f -> f.getClass().equals(DragImage.class))
-                            .filter(f -> f.getId().get().equals(idOfDragImage))
-                            .findFirst();
-                    if (diToRemove4.isPresent())
-                        ui.access(() -> board4.remove(diToRemove4.get()));
-                    break;
-                default:
-                    ui.access(() -> Notification.show("no id present"));
-            }
-        } catch (Exception e) {
-
-        }
-    }
+//    private void deleteFromDragStartBoard(UI ui, String idOfBoard) {
+//
+//        try {
+//
+//            switch (idOfBoard) {
+//                case "4":
+//                    Optional<Component> diToRemove = board1.getChildren()
+//                            .filter(f -> f.getClass().equals(DragImage.class))
+//                            .filter(f -> f.getId().get().equals(idOfDragImage))
+//                            .findFirst();
+//                    if (diToRemove.isPresent())
+//                        ui.access(() -> board1.remove(diToRemove.get()));
+//                    break;
+//                case "3":
+//                    Optional<Component> diToRemove2 = board2.getChildren()
+//                            .filter(f -> f.getClass().equals(DragImage.class))
+//                            .filter(f -> f.getId().get().equals(idOfDragImage))
+//                            .findFirst();
+//                    if (diToRemove2.isPresent())
+//                        ui.access(() -> board2.remove(diToRemove2.get()));
+//                    break;
+//                case "2":
+//                    Optional<Component> diToRemove3 = board3.getChildren()
+//                            .filter(f -> f.getClass().equals(DragImage.class))
+//                            .filter(f -> f.getId().get().equals(idOfDragImage))
+//                            .findFirst();
+//                    if (diToRemove3.isPresent())
+//                        ui.access(() -> board3.remove(diToRemove3.get()));
+//                    break;
+//                case "1":
+//                    Optional<Component> diToRemove4 = board4.getChildren()
+//                            .filter(f -> f.getClass().equals(DragImage.class))
+//                            .filter(f -> f.getId().get().equals(idOfDragImage))
+//                            .findFirst();
+//                    if (diToRemove4.isPresent())
+//                        ui.access(() -> board4.remove(diToRemove4.get()));
+//                    break;
+//                default:
+//                    ui.access(() -> Notification.show(String.valueOf(is2Playeractive)));
+//            }
+//
+//            switch (idOfBoard) {
+//                case "1":
+//                    Optional<Component> diToRemove = board1.getChildren()
+//                            .filter(f -> f.getClass().equals(DragImage.class))
+//                            .filter(f -> f.getId().get().equals(idOfDragImage))
+//                            .findFirst();
+//                    if (diToRemove.isPresent())
+//                        ui.access(() -> board1.remove(diToRemove.get()));
+//                    break;
+//                case "2":
+//                    Optional<Component> diToRemove2 = board2.getChildren()
+//                            .filter(f -> f.getClass().equals(DragImage.class))
+//                            .filter(f -> f.getId().get().equals(idOfDragImage))
+//                            .findFirst();
+//                    if (diToRemove2.isPresent())
+//                        ui.access(() -> board2.remove(diToRemove2.get()));
+//                    break;
+//                case "3":
+//                    Optional<Component> diToRemove3 = board3.getChildren()
+//                            .filter(f -> f.getClass().equals(DragImage.class))
+//                            .filter(f -> f.getId().get().equals(idOfDragImage))
+//                            .findFirst();
+//                    if (diToRemove3.isPresent())
+//                        ui.access(() -> board3.remove(diToRemove3.get()));
+//                    break;
+//                case "4":
+//                    Optional<Component> diToRemove4 = board4.getChildren()
+//                            .filter(f -> f.getClass().equals(DragImage.class))
+//                            .filter(f -> f.getId().get().equals(idOfDragImage))
+//                            .findFirst();
+//                    if (diToRemove4.isPresent())
+//                        ui.access(() -> board4.remove(diToRemove4.get()));
+//                    break;
+//                default:
+//                    ui.access(() -> Notification.show(String.valueOf(is1Playeractive)));
+//            }
+//        } catch (Exception e) {
+//
+//        }
+//    }
 
 
     public void deleteFromHand(UI ui, String id) {
-        player2Hand.getChildren().collect(Collectors.toList()).stream()
-                .filter(f -> f.getId().get().equals(id))
-                .findFirst()
-                .ifPresent(component -> getUI().ifPresent(ui1 -> ui1.access(() -> player2Hand.remove(component))));
+
+//        player2Hand.getChildren().collect(Collectors.toList()).stream()
+//                .filter(f -> f.getId().get().equals(id))
+//                .findFirst()
+//                .ifPresent(component -> getUI().ifPresent(ui1 -> ui1.access(() -> player2Hand.remove(component))));
 
     }
 
