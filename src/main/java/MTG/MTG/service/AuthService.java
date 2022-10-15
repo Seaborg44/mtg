@@ -35,4 +35,5 @@ public class AuthService {
             throw new AuthException();
         }
     }
+
 }

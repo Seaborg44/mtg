@@ -6,7 +6,6 @@ import com.vaadin.flow.component.html.Div;
 public class MessageList extends Div {
 
     public MessageList() {
-
     }
 
     @Override

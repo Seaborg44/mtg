@@ -19,15 +19,9 @@ import javax.persistence.Transient;
 @ToString
 public class DragImage extends Image implements DragSource<Image> {
 
-
     private String identificator;
-
     private String name;
-
-
     private String url;
-
-
     private String manaCost;
 
     public DragImage() {
@@ -35,5 +29,13 @@ public class DragImage extends Image implements DragSource<Image> {
         setDragData(this);
     }
 
+    public CardGraveYardInfo transformIntoCGYI(DragImage dragImage) {
+        CardGraveYardInfo cGYI = new CardGraveYardInfo();
+        cGYI.setManacost(dragImage.getManaCost());
+        cGYI.setId(dragImage.getId().get());
+        cGYI.setUrl(dragImage.getUrl());
+        cGYI.setName(dragImage.getName());
+        return cGYI;
+    }
 
 }

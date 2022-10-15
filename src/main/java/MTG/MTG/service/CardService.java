@@ -241,14 +241,16 @@ public class CardService {
             mainImage.setSrc(clickEvent.getSource().getSrc());
             MainView.url = clickEvent.getSource().getSrc();
             MainView.idOfDragImage = clickEvent.getSource().getId().get();
-            Notification.show(clickEvent.getSource().getId().get());
         });
 
         dragImage.addDragStartListener(drag -> {
             DragImage draggedImage = (DragImage) drag.getSource();
             mainImage.setSrc(drag.getSource().getSrc());
             MainView.idOfDragImage =draggedImage.getId().get();
-            MainView.dragStartBoardId = draggedImage.getParent().get().getId().orElseThrow(NoSuchElementException::new);
+            Optional<String> idOfParent = draggedImage.getParent().get().getId();
+            if(!idOfParent.isEmpty()) {
+                MainView.dragStartBoardId = idOfParent.get();
+            }
         });
 
         return dragImage;
@@ -266,14 +268,16 @@ public class CardService {
 
         dragImage2.addClickListener(clickEvent -> {
             mainImage.setSrc(clickEvent.getSource().getSrc());
-            Notification.show(clickEvent.getSource().getId().get());
         });
 
         dragImage2.addDragStartListener(drag -> {
             mainImage.setSrc(drag.getSource().getSrc());
             Notification.show(drag.getSource().getId().get());
-            MainView.idOfDragImage = String.valueOf(drag.getSource().getId().get());
-            MainView.dragStartBoardId = drag.getSource().getParent().get().getId().orElseThrow(NoSuchElementException::new);
+            MainView.idOfDragImage = drag.getSource().getId().get();
+            Optional<String> idOfParent = drag.getSource().getParent().get().getId();
+            if(!idOfParent.isEmpty()) {
+                MainView.dragStartBoardId = idOfParent.get();
+            }
         });
 
         return dragImage2;

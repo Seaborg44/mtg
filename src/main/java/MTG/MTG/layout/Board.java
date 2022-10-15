@@ -1,10 +1,12 @@
 package MTG.MTG.layout;
 
+import MTG.MTG.domain.CardGraveYardInfo;
 import MTG.MTG.domain.DragImage;
 import MTG.MTG.service.Broadcaster;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.dnd.DragSource;
 import com.vaadin.flow.component.dnd.DropTarget;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -23,6 +25,7 @@ public class Board extends VerticalLayout implements DropTarget<VerticalLayout>,
             Broadcaster.broadcast((DragImage) event.getDragSourceComponent().get());
             this.add(event.getDragSourceComponent().get());
             this.remove(event.getDragSourceComponent().get());
+            this.add(event.getDragSourceComponent().get());
         });
 
 
